@@ -1,5 +1,0 @@
-{
-    "out": "docs",
-    "includeVersion": true,
-    "entryPoints": ["./src/index.ts"]
-}
