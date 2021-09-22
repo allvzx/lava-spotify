@@ -21,7 +21,7 @@ export class Util {
                 given[key] = Util.merge(def[key], given[key]);
             }
         }
-      
+
         return given;
     }
 }

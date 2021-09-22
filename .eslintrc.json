@@ -76,7 +76,7 @@
         "operator-linebreak": ["warn", "before"],
         "implicit-arrow-linebreak": ["warn", "beside"],
         "eol-last": "error",
-        "camelcase": "warn",
+        "camelcase": "off",
         "brace-style": ["warn", "1tbs"],
         "semi-spacing": "warn",
         "key-spacing": "warn",
@@ -92,6 +92,7 @@
         "template-curly-spacing": "warn",
         "yield-star-spacing": ["warn", "after"],
         "space-before-function-paren": ["warn", "never"],
-        "no-multi-spaces": "warn"
+        "no-multi-spaces": "warn",
+        "no-trailing-spaces": "warn"
     }
 }
