@@ -35,9 +35,9 @@ export class Lavasfy {
         return this.nodes.delete(id);
     }
 
-    public resolve(url: string, node: Node | string): Promise<LavalinkTrackResponse> {
+    public load(url: string, node: Node | string): Promise<LavalinkTrackResponse> {
         if (typeof node === "string") node = this.getNode(node)!;
-        return node.resolve(url);
+        return node.load(url);
     }
 
     public async requestToken(): Promise<void> {

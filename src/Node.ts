@@ -1,4 +1,5 @@
 import { request } from "undici";
+import { HttpMethod } from "undici/types/dispatcher";
 import { Constants, LavalinkTrack, LavalinkTrackResponse, Lavasfy, SpotifyAlbum, SpotifyPlaylist, SpotifyTrack, UnresolvedTrack, Util } from ".";
 
 export class Node {
@@ -9,12 +10,18 @@ export class Node {
         for (const key in Util.merge(Constants.DefaultNodeOptions, options)) Object.defineProperty(this, key, { value: options[key as keyof NodeOptions] });
     }
 
-    public async resolve(url: string): Promise<LavalinkTrackResponse> {
+    public async load(url: string): Promise<LavalinkTrackResponse> {
         if (!this.lavasfy.token) throw Error("Missing Spotify access token.");
         if (!Util.isValidURL(url)) throw Error("Invalid URL");
 
         const { type, id } = Util.parseURL(url);
         const reqUrl = `${this.lavasfy.baseURL}/${type}s/${id}`;
+        const reqOpt = {
+            headers: {
+                Authorization: this.lavasfy.token
+            },
+            method: "GET" as HttpMethod
+        };
 
         let loadType: LavalinkTrackResponse["loadType"] = "NO_MATCHES";
         const playlistInfo: LavalinkTrackResponse["playlistInfo"] = {};
@@ -22,12 +29,7 @@ export class Node {
 
         switch (type) {
             case "album": {
-                const { statusCode, body } = await request(reqUrl, {
-                    headers: {
-                        Authorization: this.lavasfy.token
-                    },
-                    method: "GET"
-                });
+                const { statusCode, body } = await request(reqUrl, reqOpt);
                 const album: SpotifyAlbum = await body.json();
                 loadType = "PLAYLIST_LOADED";
                 playlistInfo.name = album.name;
@@ -35,12 +37,7 @@ export class Node {
                 break;
             }
             case "playlist": {
-                const { statusCode, body } = await request(reqUrl, {
-                    headers: {
-                        Authorization: this.lavasfy.token
-                    },
-                    method: "GET"
-                });
+                const { statusCode, body } = await request(reqUrl, reqOpt);
                 const playlist: SpotifyPlaylist = await body.json();
                 loadType = "PLAYLIST_LOADED";
                 playlistInfo.name = playlist.name;
@@ -48,12 +45,7 @@ export class Node {
                 break;
             }
             case "track": {
-                const { statusCode, body } = await request(reqUrl, {
-                    headers: {
-                        Authorization: this.lavasfy.token
-                    },
-                    method: "GET"
-                });
+                const { statusCode, body } = await request(reqUrl, reqOpt);
                 const json: SpotifyTrack = await body.json();
                 loadType = "TRACK_LOADED";
                 tracks.push(this.buildUnresolved(json));
